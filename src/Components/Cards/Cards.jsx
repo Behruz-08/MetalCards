@@ -1,21 +1,23 @@
+
+
 import React, { useState } from 'react';
-import style from './Cards.module.css'
+import style from './Cards.module.css';
 
 const Cards = () => {
   const [selectedColor, setSelectedColor] = useState('#000000');
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [input, setInput]=useState({
+    cardTitle:''
+  })
 
-  
 
   const handleColorChange = (e) => {
-
     const colorValue = e.target.value;
     if (colorValue.length === 7 && colorValue.startsWith("#")) {
-      setSelectedColor(e.target.value);
+      setSelectedColor(colorValue);
       updateSelectedCard();
     }
-
   };
 
   const handleImageSelect = (image) => {
@@ -23,6 +25,7 @@ const Cards = () => {
     updateSelectedCard();
   };
 
+ 
   const updateSelectedCard = () => {
     if (selectedColor && selectedImage) {
       setSelectedCard({
@@ -48,36 +51,55 @@ const Cards = () => {
 
   return (
     <div className={style.wrapper}>
-    <div className={style.container}>
       <div>
-        <input
-         type="color"
-         value={selectedColor}
-         onChange={handleColorChange}
-         />
-      </div>
-      <div className={style.img}>
-        {images.map((image, index) => (
-          <img
-         
-            key={index}
-            src={image.src}
-            alt={image.alt}
-            style={{ width: '100px', height:"100px" ,cursor: 'pointer' , border:"1px solid black"}}
-            onClick={() => handleImageSelect(image)}
+          <input
+            type="color"
+            value={selectedColor}
+            onChange={handleColorChange}
           />
-        ))}
-      </div>
-      <div >
-        {selectedCard && (
-          <div >
-            <p>Selected Color: {selectedCard.color}</p>
-            <img src={selectedCard.image.src} alt={selectedCard.image.alt} style={{ width: '200px', height:"200px" }} />
-          </div>
-        )}
-      </div>
+            <input
+             type='text'
+             value={input.cardTitle}
+         
+            onChange={(e)=>setInput({cardTitle:e.target.value})}
+             />
+        </div>
+      <div className={style.container}>
+      
+       
+        <div className={style.img}>
+          {images.map((image, index) => (
+            <div
+              key={index}
+              style={{
+                width: '100px',
+                height: '100px',
+                cursor: 'pointer',
+                border: "1px solid black",
+                backgroundColor: selectedCard && selectedCard.image.src === image.src ? selectedColor : 'transparent'
+              }}
+              onClick={() => handleImageSelect(image)}
+            >
+              <img
+                src={image.src}
+                alt={image.alt}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+          ))}
+        </div>
+        <div style={{width:"300px" , height:"300px",  backgroundColor: selectedCard  ? selectedCard.color : 'transparent'}}>
+          {selectedCard && (
+            <div>
+              <p>Selected Color: {selectedCard.color}</p>
+              <img src={selectedCard.image.src} alt={selectedCard.image.alt} style={{ width: '200px', height: '200px' }} />
+              <p style={{marginTop:"-5px"}}>{input.cardTitle}</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
-export default Cards
+
+export default Cards;
